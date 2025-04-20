@@ -14,10 +14,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flink.version>1.17.0</flink.version>
     </properties>
-
+    <repositories>
+        <repository>
+            <id>apache-flink-repo</id>
+            <url>https://repository.apache.org/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>apache-flink-snapshots</id>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
     <dependencies>
         <!-- Required Dependency -->
-      <!--  <dependency>
+        <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
             <version>${flink.version}</version>
@@ -34,9 +43,14 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
+            <artifactId>flink-core</artifactId>
+            <version>${flink.version}</version> <!-- Ensure version consistency -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-runtime-web</artifactId>
             <version>${flink.version}</version>
-        </dependency>-->
+        </dependency>
 
         <!-- Chapter 3 - Hadoop Connector -->
         <dependency>
@@ -119,19 +133,16 @@
             <version>${flink.version}</version>
         </dependency>
         <!-- Chapter 6 - Flink Gelly -->
-        <!-- Flink Core Dependencies -->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
             <version>1.14.6</version> <!-- Flink version -->
         </dependency>
-
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-gelly_2.12</artifactId>
             <version>1.14.6</version>
         </dependency>
-
     </dependencies>
 
     <build>

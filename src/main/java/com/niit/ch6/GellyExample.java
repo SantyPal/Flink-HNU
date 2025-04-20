@@ -16,22 +16,24 @@ public class GellyExample {
 
         // Sample vertices: (ID, Value)
         DataSet<Vertex<Long, String>> vertices = env.fromElements(
-                new Vertex<>(1L, "foo"),
-                new Vertex<>(2L, "bar"),
-                new Vertex<>(3L, "baz")
+                new Vertex<>(1L, "Alice"),
+                new Vertex<>(2L, "Bob"),
+                new Vertex<>(3L, "Charlie")
         );
 
         // Sample edges: (Source ID, Target ID, Edge Value)
+        // Edges: Relationships with "friendship strength" (0.0 to 1.0)
+      //  weights representing how close they are.
         DataSet<Edge<Long, Double>> edges = env.fromElements(
-                new Edge<>(1L, 2L, 0.5),
-                new Edge<>(2L, 3L, 1.0),
-                new Edge<>(1L, 3L, 0.8)
+                new Edge<>(1L, 2L, 0.5), // Alice - Bob
+                new Edge<>(2L, 3L, 1.0), // Bob - Charlie
+                new Edge<>(1L, 3L, 0.8) // Alice - Charlie
         );
 
-        // Create the graph
+        // Create the graph from people and friendships
         Graph<Long, String, Double> graph = Graph.fromDataSet(vertices, edges, env);
 
-        // Map vertex values to uppercase
+        // Example: Convert all names to uppercase (like processing user data)
         Graph<Long, String, Double> updatedGraph = graph.mapVertices(
                 new MapFunction<Vertex<Long, String>, String>() {
                     @Override

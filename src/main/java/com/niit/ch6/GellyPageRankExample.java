@@ -14,49 +14,55 @@ import java.util.List;
 
 public class GellyPageRankExample {
     public static void main(String[] args) throws Exception {
+        // Set up the Flink streaming execution environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        // Simulated stream of edges (source, target)
-        DataStream<Tuple2<Long, Long>> edgeStream = env.fromElements(
-                Tuple2.of(1L, 2L),
-                Tuple2.of(1L, 3L),
-                Tuple2.of(2L, 3L),
-                Tuple2.of(3L, 4L),
-                Tuple2.of(4L, 1L)
+        // Simulated stream of friendships (source, target)
+        // Each tuple (Person A, Person B) represents a friendship between A and B
+        DataStream<Tuple2<String, String>> friendshipStream = env.fromElements(
+                Tuple2.of("Alice", "Bob"),
+                Tuple2.of("Alice", "Charlie"),
+                Tuple2.of("Bob", "Charlie"),
+                Tuple2.of("Charlie", "David"),
+                Tuple2.of("David", "Alice")
         );
 
-        // Build adjacency list keyed by source vertex
-        edgeStream
-                .keyBy(edge -> edge.f0)
-                .flatMap(new AdjacencyListBuilder())
-                .print();
+        // Build adjacency list by grouping edges by the source vertex (person)
+        friendshipStream
+                .keyBy(friendship -> friendship.f0)  // Group by the source person
+                .flatMap(new AdjacencyListBuilder())  // Build adjacency list for each person
+                .print();  // Output the adjacency lists to the console
 
-        env.execute("Stream Graph Builder");
+        env.execute("Social Network Adjacency List Builder");
     }
 
-    // Maintains an adjacency list per source node
-    public static class AdjacencyListBuilder extends RichFlatMapFunction<Tuple2<Long, Long>, String> {
+    // This class maintains the adjacency list of friends for each person (source vertex)
+    public static class AdjacencyListBuilder extends RichFlatMapFunction<Tuple2<String, String>, String> {
 
-        private transient ListState<Long> neighbors;
+        // State to store the list of neighbors (friends) for each person
+        private transient ListState<String> neighbors;
 
         @Override
         public void open(Configuration parameters) {
-            ListStateDescriptor<Long> descriptor = new ListStateDescriptor<>(
-                    "adjacencyList", Long.class);
+            // Initialize the state to store neighbors
+            ListStateDescriptor<String> descriptor = new ListStateDescriptor<>(
+                    "adjacencyList", String.class);  // Each person will have a list of friends (String)
             neighbors = getRuntimeContext().getListState(descriptor);
         }
 
         @Override
-        public void flatMap(Tuple2<Long, Long> edge, Collector<String> out) throws Exception {
-            neighbors.add(edge.f1);
+        public void flatMap(Tuple2<String, String> friendship, Collector<String> out) throws Exception {
+            // Add the target person (friend) to the adjacency list of the source person
+            neighbors.add(friendship.f1);  // friendship.f0 is the source (person), friendship.f1 is the friend
 
-            List<Long> neighborList = new ArrayList<>();
-            for (Long n : neighbors.get()) {
-                neighborList.add(n);
+            // Collect the list of neighbors for this person
+            List<String> neighborList = new ArrayList<>();
+            for (String friend : neighbors.get()) {
+                neighborList.add(friend);  // Add each friend to the list
             }
 
-            out.collect("Vertex " + edge.f0 + " -> " + neighborList);
+            // Emit the adjacency list in a readable format (Person -> List of Friends)
+            out.collect("Person " + friendship.f0 + " -> " + neighborList);
         }
-
     }
 }

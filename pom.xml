@@ -143,6 +143,21 @@
             <artifactId>flink-gelly_2.12</artifactId>
             <version>1.14.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.niit</groupId>
+            <artifactId>FlinkProgramming</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-gelly</artifactId>
+            <version>1.16.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-gelly_2.11</artifactId>
+            <version>1.1.4</version>
+        </dependency>
     </dependencies>
 
     <build>

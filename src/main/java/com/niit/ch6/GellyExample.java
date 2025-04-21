@@ -5,29 +5,24 @@ import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.graph.Edge;
 import org.apache.flink.graph.Graph;
 import org.apache.flink.graph.Vertex;
-import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.tuple.Tuple3;
 
 public class GellyExample {
     public static void main(String[] args) throws Exception {
-
-        // Set up execution environment
+        // Set up execution environment for batch mode
         final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-
-        // Sample vertices: (ID, Value)
+        // Sample vertices: (ID, Value) - nodes on a social platform
         DataSet<Vertex<Long, String>> vertices = env.fromElements(
-                new Vertex<>(1L, "Alice"),
-                new Vertex<>(2L, "Bob"),
-                new Vertex<>(3L, "Charlie")
-        );
+                new Vertex<>(1L, "alice"),
+                new Vertex<>(2L, "bob"),
+                new Vertex<>(3L, "charlie"));
 
         // Sample edges: (Source ID, Target ID, Edge Value)
         // Edges: Relationships with "friendship strength" (0.0 to 1.0)
       //  weights representing how close they are.
         DataSet<Edge<Long, Double>> edges = env.fromElements(
-                new Edge<>(1L, 2L, 0.5), // Alice - Bob
-                new Edge<>(2L, 3L, 1.0), // Bob - Charlie
-                new Edge<>(1L, 3L, 0.8) // Alice - Charlie
+                new Edge<>(1L, 2L, 0.5), // Alice - Bob (normal relation)
+                new Edge<>(2L, 3L, 1.0), // Bob - Charlie (highest relation)
+                new Edge<>(1L, 3L, 0.8) // Alice - Charlie (Good Relation)
         );
 
         // Create the graph from people and friendships
@@ -42,7 +37,6 @@ public class GellyExample {
                     }
                 }
         );
-
         // Print transformed vertices
         updatedGraph.getVertices().print();
     }

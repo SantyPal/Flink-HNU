@@ -5,23 +5,24 @@ import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.graph.Edge;
 import org.apache.flink.graph.Graph;
 import org.apache.flink.graph.Vertex;
 import org.apache.flink.util.Collector;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple3;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class GellyCSVExample {
+public class GellywithCSV {
     public static void main(String[] args) throws Exception {
+        // Set up execution environment for batch mode
         final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
         // Read the vertices CSV file
-        DataSet<Vertex<Long, String>> vertices = env.readCsvFile("vertices.csv")
+        DataSet<Vertex<Long, String>> vertices = env.readCsvFile("src/main/java/com/niit/ch6/vertices.csv")
                 .ignoreFirstLine() // Skip the header line
                 .fieldDelimiter(",") // Set delimiter
                 .types(Long.class, String.class) // Define the types of fields in the CSV
@@ -33,7 +34,7 @@ public class GellyCSVExample {
                 });
 
         // Read the edges CSV file
-        DataSet<Edge<Long, Double>> edges = env.readCsvFile("edges.csv")
+        DataSet<Edge<Long, Double>> edges = env.readCsvFile("src/main/java/com/niit/ch6/edges.csv")
                 .ignoreFirstLine() // Skip the header line
                 .fieldDelimiter(",") // Set delimiter
                 .types(Long.class, Long.class, Double.class) // Define the types of fields in the CSV

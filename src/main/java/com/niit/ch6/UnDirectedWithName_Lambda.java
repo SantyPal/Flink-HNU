@@ -1,6 +1,5 @@
 package com.niit.ch6;
 
-import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeHint;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
@@ -10,7 +9,6 @@ import org.apache.flink.graph.Vertex;
 import org.apache.flink.util.Collector;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

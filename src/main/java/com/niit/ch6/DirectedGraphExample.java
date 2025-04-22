@@ -27,7 +27,6 @@ public class DirectedGraphExample {
                 new Edge<>(2L, 3L, 1.0), // Bob follows Charlie
                 new Edge<>(3L, 1L, 0.8)  // Alice follows Charlie
         );
-
         // Create the directed graph from vertices and directed edges
         Graph<Long, String, Double> graph = Graph.fromDataSet(vertices, edges, env);
 
@@ -35,8 +34,8 @@ public class DirectedGraphExample {
         graph.getVertices().print();
 
         // Join edges with vertices to get source and target names
-        graph.getEdges()
-                .join(graph.getVertices()) // Join edges with source vertices
+        graph.getEdges()        //source
+                .join(graph.getVertices()) // Join edges with source vertices           //1L, alice, 1L
                 .where(edge -> edge.getSource()) // Use source ID for the join
                 .equalTo(vertex -> vertex.getId()) // Join with vertex ID
                 .with(new JoinFunction<Edge<Long, Double>, Vertex<Long, String>, Tuple2<Edge<Long, Double>, Vertex<Long, String>>>() {

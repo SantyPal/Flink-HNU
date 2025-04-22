@@ -20,11 +20,10 @@ public class GellyExample {
         // Edges: Relationships with "friendship strength" (0.0 to 1.0)
       //  weights representing how close they are.
         DataSet<Edge<Long, Double>> edges = env.fromElements(
-                new Edge<>(1L, 2L, 0.5), // Alice - Bob (normal relation)
+                new Edge<>(1L, 2L, 0.0), // Alice - Bob (normal relation)
                 new Edge<>(2L, 3L, 1.0), // Bob - Charlie (highest relation)
                 new Edge<>(1L, 3L, 0.8) // Alice - Charlie (Good Relation)
         );
-
         // Create the graph from people and friendships
         Graph<Long, String, Double> graph = Graph.fromDataSet(vertices, edges, env);
 
@@ -33,10 +32,10 @@ public class GellyExample {
                 new MapFunction<Vertex<Long, String>, String>() {
                     @Override
                     public String map(Vertex<Long, String> vertex) {
+
                         return vertex.getValue().toUpperCase();
                     }
-                }
-        );
+                });
         // Print transformed vertices
         updatedGraph.getVertices().print();
     }

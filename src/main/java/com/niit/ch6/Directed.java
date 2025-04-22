@@ -22,14 +22,15 @@ public class Directed {
         DataSet<Vertex<Long, String>> vertices = env.fromElements(
                 new Vertex<>(1L, "alice"),
                 new Vertex<>(2L, "bob"),
-                new Vertex<>(3L, "charlie"));
+                new Vertex<>(3L, "charlie"),
+                new Vertex<>(4L, "dave"));
 
         // Sample edges: (Source ID, Target ID, Edge Value)
         // Edges: Directional relationships representing "follows"
         DataSet<Edge<Long, Double>> edges = env.fromElements(
                 new Edge<>(1L, 2L, 0.5), // Alice follows Bob
-                new Edge<>(2L, 3L, 1.0), // Bob follows Charlie
-                new Edge<>(1L, 3L, 0.8)  // Alice follows Charlie
+                new Edge<>(1L, 3L, 0.8),  // Alice follows Charlie
+                new Edge<>(1L, 4L, 1.0)     // Alice follows Dave
         );
 
         // Create the graph from people and "follows" relationships (directed)

@@ -15,18 +15,18 @@ public class UndirectedGraphExample {
 
         // Sample vertices: (ID, Value) - nodes on a social platform
         DataSet<Vertex<Long, String>> vertices = env.fromElements(
-                new Vertex<>(1L, "alice"),
+                new Vertex<>(1L, "alice"),  //f1
                 new Vertex<>(2L, "bob"),
                 new Vertex<>(3L, "charlie"));
 
         // Sample edges: (Source ID, Target ID, Edge Value)
         // Directed edges (Alice follows Bob, Bob follows Charlie, etc.)
         DataSet<Edge<Long, Double>> edges = env.fromElements(
-                new Edge<>(1L, 2L, 0.5), // Alice follows Bob
-                new Edge<>(2L, 3L, 1.0), // Bob follows Charlie
-                new Edge<>(1L, 3L, 0.8)  // Alice follows Charlie
+                new Edge<>(1L, 2L, 0.5), // Alice is freinds with  Bob  1--2, 2--1
+                new Edge<>(2L, 3L, 1.0), // Bob is freinds with Charlie, 2--3, 3--2
+                new Edge<>(1L, 3L, 0.8)  // Alice is freinds with Charlie, 1--3, 3--1
         );
-
+        //UNION with MapFunction)
         // For undirected graph, create both directions for each edge
         DataSet<Edge<Long, Double>> undirectedEdges = edges
                 .union(edges.map(new MapFunction<Edge<Long, Double>, Edge<Long, Double>>() {
@@ -35,6 +35,7 @@ public class UndirectedGraphExample {
                         return new Edge<>(edge.getTarget(), edge.getSource(), edge.getValue());
                     }
                 }));
+
         // Create the graph from vertices and undirected edges
         Graph<Long, String, Double> graph = Graph.fromDataSet(vertices, undirectedEdges, env);
 
@@ -43,7 +44,6 @@ public class UndirectedGraphExample {
 
         // Print the edges (connections between users)
         graph.getEdges()
-
                 .map(edge -> edge.getSource() + " is connected to " + edge.getTarget())
                 .print();
     }

@@ -7,7 +7,6 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.graph.Edge;
 import org.apache.flink.graph.Graph;
 import org.apache.flink.graph.Vertex;
-import org.apache.flink.api.common.functions.MapFunction;
 
 public class DirectedGraphExample {
     public static void main(String[] args) throws Exception {
@@ -25,7 +24,8 @@ public class DirectedGraphExample {
         DataSet<Edge<Long, Double>> edges = env.fromElements(
                 new Edge<>(1L, 2L, 0.5), // Alice follows Bob
                 new Edge<>(2L, 3L, 1.0), // Bob follows Charlie
-                new Edge<>(3L, 1L, 0.8)  // Alice follows Charlie
+                new Edge<>(3L, 1L, 0.8), // Alice follows Charlie
+                new Edge<>(1L, 3L, 0.9)
         );
         // Create the directed graph from vertices and directed edges
         Graph<Long, String, Double> graph = Graph.fromDataSet(vertices, edges, env);
@@ -44,6 +44,7 @@ public class DirectedGraphExample {
                         return new Tuple2<>(edge, vertex); // Pair the edge with the source vertex
                     }
                 })
+
                 .join(graph.getVertices()) // Join with target vertices
                 .where(tuple -> tuple.f0.getTarget()) // Use target ID for the join
                 .equalTo(vertex -> vertex.getId()) // Join with vertex ID
@@ -55,5 +56,15 @@ public class DirectedGraphExample {
                     }
                 })
                 .print();
+//        graph.getEdges()
+//                .join(graph.getVertices())
+//                .where(Edge::getSource).equalTo(Vertex::getId)
+//                .with((edge, src) -> Tuple2.of(edge, src))
+//                .returns(new TypeHint<Tuple2<Edge<Long, Double>, Vertex<Long, String>>>() {})
+//                .join(graph.getVertices())
+//                .where(t -> t.f0.getTarget()).equalTo(Vertex::getId)
+//                .with((t, tgt) -> t.f1.getValue() + " follows " + tgt.getValue())
+//                .returns(TypeInformation.of(String.class))
+//                .print();
     }
 }

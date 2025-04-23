@@ -1,5 +1,6 @@
 package com.niit.ch6;
 
+import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeHint;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
@@ -10,7 +11,9 @@ import org.apache.flink.util.Collector;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UnDirectedWithName_Lambda {
     public static void main(String[] args) throws Exception {
@@ -39,8 +42,11 @@ public class UnDirectedWithName_Lambda {
 
         // Create the graph from vertices and undirected edges
         Graph<Long, String, Double> graph = Graph.fromDataSet(vertices, undirectedEdges, env);
+        graph.getEdges()
+                .map(edge -> edge.getSource() + " is freinds with " + edge.getTarget())
+                .print();
 
-        // Create a mapping of vertex ID to vertex name
+       //  Create a mapping of vertex ID to vertex name
         DataSet<Map<Long, String>> vertexNameMap = vertices
                 .map(vertex -> {
                     Map<Long, String> map = new HashMap<>();
@@ -64,5 +70,44 @@ public class UnDirectedWithName_Lambda {
                 })
                 .returns(String.class) // helps with type inference due to lambda
                 .print();
+//        DataSet<Edge<Long, Double>> undirectedEdges = edges.union(
+//                edges.map(new ReverseEdgeMapper())
+//        );
+//
+//        Graph<Long, String, Double> graph = Graph.fromDataSet(vertices, undirectedEdges, env);
+//
+//        // Build a Map of ID -> Name
+//        List<Vertex<Long, String>> vertexList = vertices.collect();
+//        Map<Long, String> idToName = new HashMap<>();
+//        for (Vertex<Long, String> v : vertexList) {
+//            idToName.put(v.getId(), v.getValue());
+//        }
+//
+//        // Use a flatMap function with a proper class, no lambda
+//        graph.getEdges().flatMap(new EdgeNamePrinter(idToName)).print();
+//    }
+//
+//    // Reverse edges for undirected graph
+//    public static class ReverseEdgeMapper implements org.apache.flink.api.common.functions.MapFunction<Edge<Long, Double>, Edge<Long, Double>> {
+//        @Override
+//        public Edge<Long, Double> map(Edge<Long, Double> edge) {
+//            return new Edge<>(edge.getTarget(), edge.getSource(), edge.getValue());
+//        }
+//    }
+//
+//    // Convert edges to readable strings using names
+//    public static class EdgeNamePrinter implements FlatMapFunction<Edge<Long, Double>, String> {
+//        private final Map<Long, String> idToName;
+//
+//        public EdgeNamePrinter(Map<Long, String> idToName) {
+//            this.idToName = idToName;
+//        }
+//
+//        @Override
+//        public void flatMap(Edge<Long, Double> edge, Collector<String> out) {
+//            String src = idToName.get(edge.getSource());
+//            String tgt = idToName.get(edge.getTarget());
+//            out.collect(src + " is connected to " + tgt);
+//        }
     }
 }

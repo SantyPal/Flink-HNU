@@ -26,17 +26,18 @@ public class GellyExample {
         );
         // Create the graph from people and friendships
         Graph<Long, String, Double> graph = Graph.fromDataSet(vertices, edges, env);
+        graph.getVertices().print();
 
         // Example: Convert all names to uppercase (like processing user data)
-        Graph<Long, String, Double> updatedGraph = graph.mapVertices(
-                new MapFunction<Vertex<Long, String>, String>() {
-                    @Override
-                    public String map(Vertex<Long, String> vertex) {
 
-                        return vertex.getValue().toUpperCase();
-                    }
-                });
-        // Print transformed vertices
-        updatedGraph.getVertices().print();
+        DataSet<String> VV=vertices.map(new MapFunction<Vertex<Long, String>, String>() {
+            @Override
+            public String map(Vertex<Long, String> ver_value) throws Exception {
+                return ver_value.getValue().toUpperCase();
+            }
+        });
+        System.out.println("Vertex Values");
+        VV.print();
+
     }
 }

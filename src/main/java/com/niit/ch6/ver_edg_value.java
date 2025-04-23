@@ -35,7 +35,7 @@ public class ver_edg_value {
                 return ID_value.getId();
             }
         });
-        System.out.println("ID Values");
+        System.out.println("Vertex ID Values");
         VID.print();
 
         DataSet<Edge<Long, Double>> edges = env.fromElements(
